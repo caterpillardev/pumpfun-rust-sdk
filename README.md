@@ -1,24 +1,59 @@
-# Pump.fun SDK for Rust
 
-A Rust SDK for interacting with pump.fun on Solana. This SDK provides easy-to-use functions for creating tokens, buying from bonding curves, and selling to bonding curves.
+# Pump.fun Rust SDK for Solana
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Rust Edition](https://img.shields.io/badge/Rust-Edition%202021-orange)](https://www.rust-lang.org/)
+[![Solana](https://img.shields.io/badge/Solana-Blockchain-9945FF)](https://solana.com)
+
+Type-safe Rust SDK to interact with the Pump.fun program on Solana. Build Solana apps that create tokens, and buy/sell on bonding curves using Anchor-powered instruction builders. Designed for reliability, clear ergonomics, and smooth integration into Rust backends or bots.
+
+Looking for a quick walkthrough? See Getting Started: `GETTING_STARTED.md`.
+
+## Table of Contents
+
+- Overview
+- Features
+- Installation
+- Quick Start
+- Usage: Create, Buy, Sell
+- Examples
+- Program Information
+- SDK Structure
+- Compatibility
+- Error Handling
+- Contributing
+- License
+- Disclaimer
+- Keywords
+
+## Overview
+
+The `pumpdotfun_sdk` crate streamlines common Pump.fun flows on Solana: token creation with metadata, and trading via bonding curves with slippage protection. It includes PDA utilities, constants, states, and instruction builders, making it simple to assemble transactions in Rust.
 
 ## Features
 
-- 🪙 **Create new tokens** with metadata and bonding curves
-- 💰 **Buy tokens** from bonding curves with slippage protection
-- 💸 **Sell tokens** to bonding curves with slippage protection
-- 🔧 **Built-in utilities** for account management and PDA derivation
-- ✅ **Type-safe** Rust implementation using Anchor framework
+- Create new tokens with metadata and bonding curves
+- Buy tokens from bonding curves with slippage protection
+- Sell tokens to bonding curves with slippage protection
+- Built-in utilities for account management and PDA derivation
+- Type-safe Rust implementation using the Anchor framework
 
-## Program Information
+## Installation
 
-- **Program ID**: `6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P`
-- **Network**: Solana Mainnet
-- **Framework**: Anchor
+Add the SDK to your Rust project. If using a local path:
+
+```toml
+[dependencies]
+pumpdotfun_sdk = { path = "../pumpfun-rust-sdk" }
+solana-client = "2.3.4"
+solana-sdk = "2.3.1"
+```
+
+Or use it directly within this repository by following Getting Started: `GETTING_STARTED.md`.
 
 ## Quick Start
 
-### 1. Initialize the SDK
+Initialize the client and SDK:
 
 ```rust
 use std::sync::Arc;
@@ -29,14 +64,16 @@ let rpc_client = Arc::new(RpcClient::new("https://api.devnet.solana.com".to_stri
 let sdk = PumpDotFunSdk::new(rpc_client);
 ```
 
-### 2. Create a new token
+## Usage
+
+### Create a new token
 
 ```rust
 use pumpdotfun_sdk::instructions::create::{CreateAccounts, CreateArgs};
 use solana_sdk::{signature::Keypair, signer::Signer};
 
 let mint_keypair = Keypair::new();
-let user_keypair = Keypair::new(); // Your wallet keypair
+let user_keypair = Keypair::new();
 
 let create_accounts = CreateAccounts {
     mint: mint_keypair.pubkey(),
@@ -53,7 +90,7 @@ let create_args = CreateArgs {
 let instruction = sdk.create(create_accounts, create_args);
 ```
 
-### 3. Buy tokens
+### Buy tokens
 
 ```rust
 use pumpdotfun_sdk::instructions::buy::{BuyAccounts, Buy};
@@ -65,15 +102,15 @@ let buy_accounts = BuyAccounts {
 };
 
 let buy_args = Buy {
-    amount: 100_000_000, // Amount of tokens to buy
-    max_sol_cost: LAMPORTS_PER_SOL / 1000, // Maximum 0.001 SOL
-    slippage: 10, // 10% slippage tolerance 
+    amount: 100_000_000,
+    max_sol_cost: LAMPORTS_PER_SOL / 1000,
+    slippage: 10,
 };
 
 let instructions = sdk.buy(buy_accounts, buy_args)?;
 ```
 
-### 4. Sell tokens
+### Sell tokens
 
 ```rust
 use pumpdotfun_sdk::instructions::sell::{SellAccounts, Sell};
@@ -84,87 +121,27 @@ let sell_accounts = SellAccounts {
 };
 
 let sell_args = Sell {
-    amount: 50_000_000,                         // 0.05 tokens (assuming 9 decimals)
-    min_sol_output: LAMPORTS_PER_SOL / 1000000, 
-    slippage: 10,  // 10% slippage
+    amount: 50_000_000,
+    min_sol_output: LAMPORTS_PER_SOL / 1_000_000,
+    slippage: 10,
 };
 
 let instructions = sdk.sell(sell_accounts, sell_args)?;
 ```
 
-## Running the Example
+## Examples
 
-This repository includes a comprehensive example that demonstrates all SDK features.
+This repository includes runnable examples:
 
-### Quick Setup (Recommended)
+- `examples/simple_example.rs` — minimal create and buy flow
 
-Run the setup script to automatically configure everything:
+For a scripted setup and more detail, see Getting Started: `GETTING_STARTED.md`.
 
-```bash
-# Make sure you have Rust installed first
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+## Program Information
 
-# Clone and run setup
-git clone <your-repo>
-cd pumpdotfun-sdk
-./scripts/setup.sh
-```
-
-The setup script will:
-- Install Solana CLI (if needed)
-- Configure devnet
-- Create a wallet (if needed) 
-- Fund it with SOL
-- Show you next steps
-
-### Manual Prerequisites
-
-If you prefer manual setup:
-
-1. **Install Rust and Cargo**:
-   ```bash
-   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-   ```
-
-2. **Install Solana CLI**:
-   ```bash
-   sh -c "$(curl -sSfL https://release.solana.com/v1.17.0/install)"
-   ```
-
-3. **Get devnet SOL**:
-   ```bash
-   # Generate a new keypair (or use existing one)
-   solana-keygen new --outfile ~/.config/solana/devnet-wallet.json
-   
-   # Airdrop SOL to your wallet
-   solana airdrop 2 --url devnet --keypair ~/.config/solana/devnet-wallet.json
-   ```
-
-### Running the Example
-
-1. **Clone and build**:
-   ```bash
-   git clone <your-repo>
-   cd pumpdotfun-sdk
-   cargo build
-   ```
-
-2. **Run the examples**:
-
-   **Simple Example** (recommended for beginners):
-   ```bash
-   cargo run --bin simple_example
-   ```
-   
-
-The examples will:
-1. Connect to Solana devnet
-2. Create a new token with bonding curve
-3. Buy tokens from the bonding curve
-4. Sell some tokens back (full example only)
-5. Display transaction signatures and results
-
-> **Note**: The simple example uses your actual wallet from `~/.config/solana/devnet-wallet.json`, while the full example generates a new keypair each time (which won't have SOL).
+- Program ID: `6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P`
+- Network: Solana (Mainnet program; develop on Devnet)
+- Framework: Anchor
 
 ## SDK Structure
 
@@ -172,50 +149,37 @@ The examples will:
 src/
 ├── lib.rs              # Main SDK entry point
 ├── instructions/       # Instruction builders
-│   ├── create.rs      # Token creation
-│   ├── buy.rs         # Token purchasing
-│   └── sell.rs        # Token selling
+│   ├── create.rs       # Token creation
+│   ├── buy.rs          # Token purchasing
+│   └── sell.rs         # Token selling
 ├── constants.rs        # Program constants
-├── errors.rs          # Error definitions
-├── pda.rs             # PDA derivation utilities
-└── states/            # Account state definitions
-    └── global.rs      # Global state structure
+├── errors.rs           # Error definitions
+├── pda.rs              # PDA derivation utilities
+└── states/             # Account state definitions
+    └── global.rs       # Global state structure
 ```
 
+## Compatibility
 
-## Key Concepts
-
-### Bonding Curves
-pump.fun uses bonding curves to automatically provide liquidity for newly created tokens. As more tokens are bought, the price increases along the curve.
-
-### Slippage Protection
-Both buy and sell operations include slippage protection:
-- **Buy**: Specify maximum SOL you're willing to spend
-- **Sell**: Specify minimum SOL you're willing to receive
-- **Slippage**: Tolerance (5 = 5%)
-
-### Associated Token Accounts
-The SDK automatically handles Associated Token Account (ATA) creation when needed for buy operations.
+- Rust Edition 2021
+- Solana crates: `solana-client 2.3.x`, `solana-sdk 2.3.x`
+- Anchor-based instruction builders
 
 ## Error Handling
-
-The SDK includes comprehensive error handling:
 
 ```rust
 use pumpdotfun_sdk::errors::ErrorCode;
 
 match sdk.buy(accounts, args) {
-    Ok(instructions) => {
-        // Handle success
-    }
+    Ok(instructions) => { /* ... */ }
     Err(ErrorCode::InvalidSlippage) => {
-        println!("Slippage must be non-negative");
+        eprintln!("Slippage must be non-negative");
     }
     Err(ErrorCode::GlobalNotFound) => {
-        println!("Global state not found - program may not be initialized");
+        eprintln!("Global state not found - program may not be initialized");
     }
     Err(e) => {
-        println!("Other error: {:?}", e);
+        eprintln!("Other error: {:?}", e);
     }
 }
 ```
@@ -226,13 +190,16 @@ match sdk.buy(accounts, args) {
 2. Create a feature branch
 3. Make your changes
 4. Add tests
-5. Submit a pull request
-
+5. Open a pull request
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT — see `LICENSE` for details.
 
 ## Disclaimer
 
-This SDK is for educational and development purposes. Always test thoroughly on devnet before using on mainnet. The authors are not responsible for any financial losses.
+This SDK is for educational and development purposes. Test thoroughly on devnet before mainnet usage. The authors are not responsible for financial losses.
+
+## Keywords
+
+Pump.fun, Pump fun, Rust SDK, Solana SDK, Solana Pump.fun, bonding curve, token creation, buy tokens, sell tokens, Anchor, PDA, Solana program, Rust crypto, DeFi, memecoin tooling

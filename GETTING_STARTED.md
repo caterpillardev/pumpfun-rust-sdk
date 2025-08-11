@@ -31,13 +31,13 @@ cargo run --bin simple_example
 
 🎉 **That's it!** You just created a token and bought some on pump.fun devnet!
 
-## 📝 What Just Happened?
+## What Just Happened?
 
 The simple example:
-1. ✅ Connected to Solana devnet
-2. 🪙 Created a new token called "Test Pump Token" (TEST)
-3. 💰 Bought 0.1 tokens using your devnet SOL
-4. 📋 Displayed the transaction signatures
+1. Connected to Solana devnet
+2. Created a new token called "Test Pump Token" (TEST)
+3. Bought 0.1 tokens using your devnet SOL
+4. Displayed the transaction signatures
 
 You can verify the transactions on [Solana Explorer](https://explorer.solana.com/?cluster=devnet) by pasting the transaction IDs.
 
@@ -74,7 +74,7 @@ solana-client = "2.3.4"
 solana-sdk = "2.3.1"
 ```
 
-## 🧰 Core Operations
+## Core Operations
 
 ### Create a Token
 ```rust
@@ -107,7 +107,7 @@ When you run the examples, you'll see:
 - **Gas fees**: Each transaction costs a tiny amount of SOL (~0.00025 SOL)
 - **Token decimals**: Tokens typically use 9 decimal places
 
-## 🆘 Troubleshooting
+## Troubleshooting
 
 ### "Could not load wallet"
 ```bash
@@ -134,13 +134,13 @@ rustup update
 cargo clean && cargo build
 ```
 
-## 📚 Learn More
+## Learn More
 
 - Read the full [README.md](README.md) for detailed documentation
 - Explore the [examples/](examples/) directory for more code samples
 - Check the [src/](src/) directory to understand the SDK internals
 
-## 🤝 Need Help?
+## Need Help?
 
 - Create an issue in this repository
 - Check the [Solana documentation](https://docs.solana.com/)
